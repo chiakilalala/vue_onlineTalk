@@ -9,11 +9,8 @@ const app = new Vue({
     pages: 0,
   },
   methods: {
-    updatePage(page) {
-      this.currentPage = page
-    },
     getUniqueList() {
-      const locations = new Set();
+      const locations = new Set(); // 使用 ES6 中的 set() 取出唯一值
       this.data.forEach((item, i) => {
         locations.add(item.Zone)
       })
@@ -25,20 +22,18 @@ const app = new Vue({
       const newData = []
       const vm = this
       let items = []
+      // 過濾地點
       if (vm.currentLocation !== '') {
-        items = vm.data.filter((item, i) => {
-          return item.Zone === vm.currentLocation
-        })
+        items = vm.data.filter((item, i) => item.Zone === vm.currentLocation)
       } else {
         items = vm.data
       }
-      
+      // 分頁製作
       items.forEach((item, i) => {
         if (i % 10 === 0) {
           newData.push([])
         }
         const page = parseInt(i / 10)
-        console.log(i, page)
         newData[page].push(item)
       })
       vm.pages = newData.length // 分頁數量
@@ -48,10 +43,9 @@ const app = new Vue({
   },
   created () {
     const vm = this
-    axios.get('http://localhost:5000/data').then((response) => {
-      console.log(response)
-      vm.data = response.data
-      vm.getUniqueList()
+    axios.get('http://localhost:7000/data.json').then((response) => {
+      vm.data = response.data.data
+      vm.getUniqueList() // 取得資料後，將地區的值取出來
     })
   }
 })
